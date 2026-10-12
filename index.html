@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prime Kreatives — AI Automation & System Improvement Builder</title>
+<link rel="icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0F294C; --indigo:#1D1F34; --slate:#4D5D6D;
+  --gold:#B88917; --amber:#E39F0E; --sand:#DDB568;
+  --paper:#F4F1EA; --paper2:#ECE7DC; --card:#FFFFFF; --ink:#1B1D2A;
+  --line:#E2DCCF; --line2:#D5CFBF; --muted:#6B7686;
+  --green:#1e7e4a; --red:#b3402e; --blue:#2f5d8a;
+  --r:14px; --r-sm:10px; --shadow:0 6px 24px -10px rgba(15,41,76,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Work Sans',sans-serif;line-height:1.55;font-size:15px}
+.mono{font-family:'Space Mono',monospace}
+.serif{font-family:'Fraunces',serif}
+/* top bar */
+.topbar{background:var(--indigo);color:var(--paper);border-bottom:1px solid rgba(221,181,104,.25);position:sticky;top:0;z-index:60}
+.topbar-in{max-width:1240px;margin:0 auto;padding:0 22px;height:62px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-size:17px}
+.brand-mark{width:32px;height:36px;flex:none;display:block;background:#000;border-radius:8px;padding:2px}
+.brand-mark img{display:block;width:100%;height:100%;object-fit:contain}
+.brand small{display:block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;color:var(--sand);text-transform:uppercase}
+.save-ind{font-family:'Space Mono',monospace;font-size:11px;color:rgba(244,241,234,.75);display:flex;align-items:center;gap:8px}
+.dot{width:9px;height:9px;border-radius:50%;background:#7fc97f;display:inline-block}
+.dot.dirty{background:var(--amber)}
+.btn{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:12px 20px;border-radius:100px;border:1px solid transparent;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:transform .12s}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--gold);color:var(--indigo);font-weight:700}
+.btn-ghost{background:transparent;color:var(--paper);border-color:rgba(244,241,234,.3)}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-line{background:#fff;border-color:var(--line2);color:var(--navy)}
+.btn-sm{padding:8px 14px;font-size:11px}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.wrap{max-width:1240px;margin:0 auto;padding:26px 22px 90px}
+/* steps */
+.steps{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 22px}
+.step{flex:1 1 110px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;min-width:110px}
+.step.active{border-color:var(--gold);box-shadow:var(--shadow);outline:2px solid rgba(184,137,23,.25)}
+.step.done{border-color:#9ec49e}
+.step b{display:block;font-size:13px;color:var(--navy)}
+.step span{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g-builder{grid-template-columns:300px 1fr 300px}
+@media(max-width:1080px){.g-builder{grid-template-columns:250px 1fr}.assistant-col{grid-column:1/-1}}
+@media(max-width:820px){.g2,.g3,.g-builder{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px}
+.card h2{font-family:'Fraunces',serif;font-weight:500;color:var(--navy);font-size:24px;margin-bottom:6px}
+.card h3{color:var(--navy);font-size:15px;margin:14px 0 8px}
+.eyebrow{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;display:flex;gap:8px;align-items:center}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--gold)}
+.lede{color:var(--slate)}
+label.f{display:block;font-size:13px;font-weight:600;color:var(--navy);margin:12px 0 6px}
+input,select,textarea{width:100%;border:1px solid var(--line2);border-radius:10px;padding:11px 12px;font:inherit;background:#FFFDF8}
+textarea{min-height:90px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid rgba(184,137,23,.4);border-color:var(--gold)}
+.area-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:10px}
+.area{border:1.5px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center;cursor:pointer;background:#FFFDF8}
+.area .ic{font-size:22px}
+.area b{display:block;font-size:13px;color:var(--navy);margin-top:6px}
+.area.sel{border-color:var(--gold);background:#FFF8E6;box-shadow:var(--shadow)}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap}
+.pill{border:1.5px solid var(--line2);border-radius:100px;padding:9px 16px;cursor:pointer;font-size:13px;background:#fff}
+.pill.sel{background:var(--navy);color:#fff;border-color:var(--navy)}
+.badge{display:inline-flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line2);border-radius:100px;padding:4px 10px;background:#FFFDF8;color:var(--navy)}
+.badge.gold{background:#FFF3D6;border-color:var(--gold)}
+.badge.green{background:#EAF6EE;border-color:#9ec49e;color:#175c36}
+.badge.gray{background:#F1EFE9}
+/* hero */
+.hero{background:linear-gradient(180deg,var(--indigo),var(--navy));color:var(--paper);border-radius:18px;padding:46px 40px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-120px;top:-120px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(184,137,23,.3),transparent 70%)}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,44px);line-height:1.15;max-width:640px}
+.hero h1 em{color:var(--sand)}
+.hero p{color:rgba(244,241,234,.8);max-width:620px;margin-top:14px}
+.hero-actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;position:relative;z-index:1}
+.method{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+@media(max-width:900px){.method{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.method{grid-template-columns:1fr}}
+.stage{border:1px solid var(--line);border-radius:12px;padding:14px;background:#FFFDF8}
+.stage b{color:var(--navy)}
+.stage ol{margin:8px 0 8px 18px;font-size:13px;color:#3c4453}
+/* toolbox */
+.toolbox{max-height:640px;overflow:auto}
+.tool-item{border:1px solid var(--line);border-radius:10px;padding:9px 10px;margin-bottom:8px;background:#FFFDF8;cursor:grab;display:flex;gap:9px;align-items:center}
+.tool-item:active{cursor:grabbing}
+.tool-item .t-ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--paper2);flex:none}
+.tool-item b{font-size:12.5px;color:var(--navy);display:block}
+.tool-item span{font-size:11px;color:var(--muted)}
+.cat-title{font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:14px 0 8px}
+/* canvas */
+.canvas{border:1.5px dashed var(--line2);border-radius:14px;background:#FBFAF6;min-height:560px;position:relative;padding:18px;overflow:auto}
+.canvas.dragover{border-color:var(--gold);background:#FFF8E6}
+.wf-node{background:#fff;border:1.5px solid var(--line2);border-radius:12px;padding:10px 12px;width:250px;position:absolute;box-shadow:var(--shadow);cursor:move}
+.wf-node.sel{border-color:var(--gold);outline:2px solid rgba(184,137,23,.35)}
+.wf-node .nm{font-weight:700;color:var(--navy);font-size:13px}
+.wf-node .meta{font-size:11px;color:var(--muted);margin-top:2px}
+.wf-node .row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.mini-btn{font-family:'Space Mono',monospace;font-size:10px;border:1px solid var(--line2);background:#fff;border-radius:20px;padding:3px 9px;cursor:pointer}
+.mini-btn:hover{border-color:var(--gold)}
+.arrow-line{position:absolute;pointer-events:none}
+.empty-canvas{text-align:center;color:var(--muted);padding:70px 20px;border-radius:12px}
+.mode-Automated{background:#EAF6EE;border-color:#9ec49e}
+.mode-Human{background:#FFF0E4;border-color:#e0a35c}
+/* plan cards */
+.plan{border:2px solid var(--line);border-radius:14px;padding:18px;background:#fff}
+.plan.sel{border-color:var(--gold);box-shadow:var(--shadow);background:#FFFCF0}
+.plan ul{margin:8px 0 8px 18px;font-size:13.5px}
+table.cmp{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border-radius:12px;overflow:hidden}
+table.cmp th,table.cmp td{border:1px solid var(--line);padding:10px;text-align:center}
+table.cmp th{background:var(--navy);color:#fff}
+table.cmp td:first-child,table.cmp th:first-child{text-align:left;background:#FFFDF4;font-weight:600}
+/* timeline */
+.tl{position:relative;margin:10px 0 0 8px;padding-left:22px;border-left:2px solid var(--line2)}
+.tl-item{position:relative;padding:0 0 18px}
+.tl-item::before{content:"";position:absolute;left:-29px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid #fff;box-shadow:0 0 0 2px var(--gold)}
+.mock{background:var(--indigo);color:var(--paper);border-radius:14px;padding:20px}
+.mock-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+@media(max-width:700px){.mock-grid{grid-template-columns:1fr 1fr}}
+.stat{background:rgba(255,255,255,.07);border:1px solid rgba(221,181,104,.3);border-radius:10px;padding:12px}
+.stat b{font-size:20px;color:var(--sand)}
+.alert{border-radius:10px;padding:12px 14px;font-size:13.5px;margin:10px 0;border:1px solid}
+.alert.ok{background:#EAF6EE;border-color:#9ec49e}
+.alert.err{background:#FDEEEC;border-color:#e0a3a3}
+.alert.info{background:#EDF3FA;border-color:#a9c3de}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 12px;font-size:13.5px}
+.kv dt{color:var(--muted)}
+table.proj{width:100%;border-collapse:collapse;font-size:13px}
+table.proj th,table.proj td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left}
+.hidden{display:none!important}
+footer.pk-foot{background:var(--indigo);color:rgba(244,241,234,.62);border-top:1px solid rgba(221,181,104,.18);margin-top:44px}
+.pk-tagline{text-align:center;color:var(--slate);font-size:13px;padding:34px 22px 0;max-width:760px;margin:0 auto}
+.pk-tagline b{color:var(--navy);font-family:'Fraunces',serif}
+.foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:36px;padding:44px 0 32px;max-width:1240px;margin:0 auto;padding-left:22px;padding-right:22px}
+.foot-brand{display:flex;gap:14px;align-items:center}
+.foot-logo{width:56px;height:56px;border-radius:50%;flex:none;background:#000;border:2px solid var(--sand);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.foot-logo img{width:88%;height:88%;object-fit:contain;display:block}
+.foot-name{font-family:'Fraunces',serif;font-size:24px;font-weight:500;color:var(--sand);line-height:1.1}
+.foot-tag{font-family:'Fraunces',serif;font-style:italic;font-size:14px;color:rgba(244,241,234,.78)}
+.foot-bio{font-size:13.5px;margin-top:14px;max-width:340px;color:rgba(244,241,234,.62)}
+.foot-social{display:flex;gap:10px;margin-top:18px}
+.foot-social a{width:40px;height:40px;border-radius:50%;border:1px solid rgba(221,181,104,.4);display:flex;align-items:center;justify-content:center;color:var(--sand);font-size:18px;text-decoration:none}
+.foot-social a:hover{background:rgba(221,181,104,.15)}
+.foot-social img{width:19px;height:19px;display:block}
+.foot-h{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);margin-bottom:16px}
+.foot-links{list-style:none;display:grid;gap:10px;font-size:14px;margin:0;padding:0}
+.foot-links a{color:rgba(244,241,234,.7);text-decoration:none}
+.foot-links a:hover{color:var(--sand)}
+.foot-contact{display:grid;gap:10px;font-size:14px;color:rgba(244,241,234,.7)}
+.foot-contact a{color:rgba(244,241,234,.7);text-decoration:none}
+.foot-contact a:hover{color:var(--sand)}
+.foot-base{border-top:1px solid rgba(244,241,234,.1);padding:20px 0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;text-align:center;color:rgba(244,241,234,.45)}
+.foot-base span{color:var(--sand)}
+@media(max-width:760px){.foot-grid{grid-template-columns:1fr;padding:40px 22px 28px}}
+@media print{
+  .topbar,.steps,.no-print{display:none!important}
+  .wrap{max-width:100%;padding:0}
+  .card{box-shadow:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <div class="brand"><div class="brand-mark"><img src="assets/prime-kreatives-logo.png" alt="Prime Kreatives logo"></div><div>Prime Kreatives<small>Automation Builder · <span id="connLabel">DEMO</span></small></div></div>
+  <div class="save-ind"><span id="saveDot" class="dot"></span><span id="saveText">Saved</span>
+    <button class="btn btn-ghost btn-sm no-print" onclick="saveProject(false)">Save</button>
+  </div>
+</div></div>
+<div class="wrap">
+  <div class="steps no-print" id="steps"></div>
+  <div id="app"></div>
+  <div class="pk-tagline"><b>PRIME KREATIVES — SYSTEMS THAT WORK. AUTOMATION THAT EMPOWERS. RESULTS THAT MATTER.</b><br>We don't automate just because we can. We improve the process first, then use the right technology to make work smarter, simpler, and more effective.</div>
+</div>
+<footer class="pk-foot no-print">
+  <div class="foot-grid">
+    <div>
+      <div class="foot-brand">
+        <div class="foot-logo"><img src="assets/prime-kreatives-logo.png" alt="Prime Kreatives logo"></div>
+        <div><div class="foot-name">Prime Kreatives</div><div class="foot-tag">Where vision meets execution.</div></div>
+      </div>
+      <p class="foot-bio">Client success &amp; executive operations with a creative eye — reporting, SOPs and brand work that make your business look sharp.</p>
+      <div class="foot-social">
+        <a href="https://prime-kreatives.netlify.app/" target="_blank" rel="noopener" aria-label="Website"><img src="https://cdn.simpleicons.org/internetexplorer/DDB568" alt="Website" onerror="this.outerHTML='🌐'"></a>
+        <a href="https://www.facebook.com/prime.kreatives17" target="_blank" rel="noopener" aria-label="Facebook"><img src="https://cdn.simpleicons.org/facebook/DDB568" alt="Facebook"></a>
+        <a href="https://www.instagram.com/prime.kreatives" target="_blank" rel="noopener" aria-label="Instagram"><img src="https://cdn.simpleicons.org/instagram/DDB568" alt="Instagram"></a>
+      </div>
+    </div>
+    <div>
+      <div class="foot-h">Explore</div>
+      <div class="foot-links">
+        <a href="https://prime-kreatives.netlify.app/">Home</a>
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms-legal-policy.html">Terms &amp; Legal</a>
+        <a href="https://prime-kreatives.netlify.app/discovery-call.html">Discovery call</a>
+      </div>
+    </div>
+    <div>
+      <div class="foot-h">Get in touch</div>
+      <div class="foot-contact">
+        <a href="https://prime-kreatives.netlify.app/" target="_blank" rel="noopener">prime-kreatives.netlify.app</a>
+        <a href="mailto:prime.kreatives@gmail.com">prime.kreatives@gmail.com</a>
+        <span>Cebu City, Philippines</span>
+      </div>
+    </div>
+  </div>
+  <div class="foot-base">&copy; <span>2026</span> Prime Kreatives. All rights reserved.</div>
+</footer>
+<script>
+"use strict";
+/* ============ STATE ============ */
+const LS_P="pk_ab_projects", LS_C="pk_ab_current", LS_S="pk_ab_settings";
+const AREAS=[["Customer Service","💬"],["Sales","🤝"],["Recruitment","🧲"],["Operations","⚙️"],["Administration","🗂️"],["Marketing","📣"],["Reporting","📊"],["Data Management","💾"],["Communication","✉️"],["Finance","💰"],["Other","✨"]];
+const TOOLBOX={
+ "Triggers":[["New Email","✉️"],["New Lead","🧲"],["Form Submission","📝"],["New Customer","👋"],["New Spreadsheet Row","📄"],["Scheduled Time","⏰"],["Manual Trigger","👆"],["Webhook","🔗"]],
+ "AI":[["AI Classification","🏷️"],["AI Summary","📋"],["AI Data Extraction","🔎"],["AI Response Generation","💡"],["AI Recommendation","⭐"],["AI Scoring","📈"],["AI Matching","🔀"],["AI Quality Check","✅"]],
+ "Data":[["Google Sheets","📗"],["Excel","📊"],["Airtable","🗃️"],["Database","🛢️"],["CRM","👥"]],
+ "Communication":[["Gmail","📧"],["Outlook","📨"],["Slack","💬"],["Microsoft Teams","👔"],["SMS","📱"],["Email","✉️"]],
+ "Automation":[["Make","🔧"],["Zapier","⚡"],["Power Automate","🌀"],["n8n","🧩"],["Google Apps Script","📜"]],
+ "Business Systems":[["Recruitment System","🧲"],["Customer Database","👥"],["Project Management","📌"],["Reporting Dashboard","📊"],["CRM Update","🔄"]],
+ "Human Action":[["Review","👀"],["Approve","✔️"],["Reject","✖️"],["Escalate","🚨"],["Call Customer","📞"],["Send Manual Response","✍️"]]
+};
+const CAT_OF={}; Object.entries(TOOLBOX).forEach(([c,items])=>items.forEach(([n])=>CAT_OF[n]=c));
+const AI_TOOLS=["ChatGPT / OpenAI","Claude","Google Gemini","Microsoft Copilot"];
+const AUTO_TOOLS=["Make","Zapier","Microsoft Power Automate","n8n","Google Apps Script"];
+const DATA_TOOLS=["Google Sheets","Excel","Airtable","Database"];
+const COMM_TOOLS=["Gmail","Outlook","Slack","Microsoft Teams"];
+const PAIN_LIB=["Manual data entry","Repetitive tasks","Duplicate work","Delayed communication","Human error","Poor visibility","Multiple systems","Lack of reporting"];
+const STEPS=[["welcome","Welcome","Start"],["discover","Discover","Problem"],["analyze","Analyze","Insights"],["method","Method","4 Stages"],["builder","Design","Workflow"],["tools","Tools","Choose"],["options","Options","Compare"],["preview","Preview","System"],["plan","Plan","Schedule"],["review","Review","Submit"],["manage","Projects","Manage"]];
+let screen="welcome";
+let P=null;
+function uid(){return "n"+Math.random().toString(36).slice(2,8)}
+function blankProject(){return {id:"PK-"+Date.now().toString(36).toUpperCase(),client:{name:"",company:"",email:"",phone:"",industry:"",projectName:""},area:"",problem:"",current:"",desired:"",importance:"Medium",analysis:null,nodes:[],tools:{ai:"",automation:"",data:"",comm:"",mode:"recommend"},plan:"B",timeline:[],schedule:{start:iso(new Date()),target:"",review:"",test:"",launch:"",optimize:""},notes:"",status:"Discovery",created:new Date().toISOString(),updated:new Date().toISOString()}}
+function iso(d){return d.toISOString().slice(0,10)}
+function load(k,f){try{const v=localStorage.getItem(k);return v?JSON.parse(v):f}catch(e){return f}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+let projects=load(LS_P,[]), settings=load(LS_S,{endpoint:"",connected:false});
+function markDirty(){const d=document.getElementById("saveDot"),t=document.getElementById("saveText");if(d){d.classList.add("dirty");t.textContent="Unsaved changes"}}
+function markSaved(){const d=document.getElementById("saveDot"),t=document.getElementById("saveText");if(d){d.classList.remove("dirty");t.textContent="Saved · "+new Date().toLocaleTimeString()}}
+function getSettings(){return settings}
+function setConnLabel(){document.getElementById("connLabel").textContent=(settings.endpoint?"CONNECTED":"DEMO")}
+/* ============ ANALYSIS ENGINE (local, explainable) ============ */
+function analyzeProblem(){
+  const text=((P.problem||"")+" "+(P.current||"")+" "+(P.desired||"")).toLowerCase();
+  const pains=[];
+  if(/manual|excel|sheet|copy|paste|entry|typing/.test(text))pains.push("Manual data entry");
+  if(/repeat|every day|daily|again|routine|follow.?up/.test(text))pains.push("Repetitive tasks");
+  if(/double|twice|duplicate|re-enter|reenter/.test(text))pains.push("Duplicate work");
+  if(/slow|delay|wait|late|miss/.test(text))pains.push("Delayed communication");
+  if(/error|mistake|wrong|forget/.test(text))pains.push("Human error");
+  if(/track|visib|status|report|dashboard/.test(text))pains.push("Poor visibility");
+  if(/system|tool|app|sheet|crm|email/.test(text))pains.push("Multiple systems");
+  if(/report|metric|kpi|insight/.test(text))pains.push("Lack of reporting");
+  while(pains.length<3)pains.push(PAIN_LIB.find(x=>!pains.includes(x)));
+  const opps=[
+    {part:"Intake & capture ("+(P.area||"request")+")",verdict:"Automated",why:"Standard information can be collected by form / trigger and written to one source of truth."},
+    {part:"Sorting, scoring & routing",verdict:"Assisted by AI",why:"AI can draft a classification or score, but a person should confirm before customers are affected."},
+    {part:"Updates across systems",verdict:"Automated",why:"Copying the same data into sheets, CRM and email is pure waste — automate it."},
+    {part:"Customer-facing messages",verdict:"AI-assisted + Human approval",why:"AI can draft replies fast; keep a human checkpoint for tone and accuracy."},
+    {part:"Follow-ups & reminders",verdict:"Automated",why:"Scheduled nudges never forget."},
+    {part:"Final decision ("+(P.area||"outcome")+")",verdict:"Kept human-controlled",why:"Judgement, relationships and exceptions stay with people."}
+  ];
+  const summary="Your team loses time on "+pains.slice(0,3).join(", ").toLowerCase()+" in "+(P.area||"this area")+". The fix is not to automate everything — it is to create one clear intake, let AI do the repetitive sorting and drafting, sync the systems automatically, and keep a human approval before anything reaches a customer. Importance: "+P.importance+".";
+  const currentSteps=["Work arrives ("+(P.area||"request")+")","Someone copies it into sheets / email manually","Team discusses and decides what to do next","Updates typed into a second system","Customer / colleague waits for a reply","Nobody can see overall status without asking"];
+  P.analysis={summary,pains:pains.slice(0,6),opps,currentSteps};
+  P.updated=new Date().toISOString(); markDirty();
+}
+function recommendTools(){
+  const t=(P.problem+" "+P.current).toLowerCase();
+  const google=/google|gmail|sheet|workspace/.test(t), ms=/outlook|teams|excel|microsoft/.test(t);
+  const complex=/database|scale|thousand|complex|api|multiple|branch/.test(t);
+  const simple=/small|simple|internal|lightweight|just|only/.test(t);
+  let rec,alt,adv,why,why2,why3;
+  if(ms){rec="Excel + Power Automate + Microsoft Copilot";why="Best fit because you already live in Microsoft 365 — mail, sheets and approvals stay in one place.";alt="Make + OpenAI + Excel";why2="Visual automation with less coding if Power Automate feels rigid.";adv="n8n + Database + AI";why3="Better for complex workflows and future scalability.";}
+  else if(complex){rec="n8n + Database + AI (OpenAI/Claude)";why="Handles larger volumes, branching logic and a real database as you grow.";alt="Make + OpenAI + Google Sheets";why2="Faster to launch; move to a database later.";adv="Google Sheets + Apps Script + OpenAI";why3="Lightest option if you want to start tiny.";}
+  else{rec="Google Sheets + Apps Script + OpenAI";why="Best for a lightweight internal system using your existing Google environment — low cost, easy to maintain.";alt="Make + OpenAI + Google Sheets";why2="Easier visual automation with less coding.";adv="n8n + OpenAI + Database";why3="Better for complex workflows and future scalability.";}
+  if(simple&&!complex&&!ms){rec="Google Sheets + Apps Script + OpenAI";why="Best for a lightweight internal system using your existing Google environment.";}
+  return {rec,why,alt,why2,adv,why3};
+}
+function planData(){
+  const R=recommendTools();
+  return {
+   A:{name:"Option A — Start Simple",tag:"Small teams · low complexity",tech:"Google Sheets + Apps Script",days:"3–5 days",auto:"Medium",maint:"Low",cost:"Low",detail:R.rec.includes("Excel")?"Excel + Power Automate (simple)":"Google Sheets + Apps Script"},
+   B:{name:"Option B — Smart Automation ⭐ Recommended",tag:"Best balance for most teams",tech:"Sheets/Excel + Make + AI",days:"5–10 days",auto:"High",maint:"Medium",cost:"Medium",detail:R.alt},
+   C:{name:"Option C — Scalable System",tag:"Growth, volume & reporting",tech:"Database + n8n + AI + Dashboard",days:"2–4 weeks",auto:"Very High",maint:"Medium/High",cost:"Higher",detail:R.adv}
+  };
+}
+function autoNodesForPlan(plan){
+  const area=P.area||"Request";
+  const ai=P.tools.ai||"OpenAI"; const data=P.tools.data||"Google Sheets";
+  const auto=P.tools.automation||"Make"; const comm=P.tools.comm||"Gmail";
+  const base=[
+    ["Form Submission","Triggers",auto,"Captures "+area.toLowerCase()+" request","Automated"],
+    [data,"Data",auto,"Single source of truth","Automated"],
+    ["AI Classification","AI",ai,"Sorts & scores each entry","AI-assisted"],
+    ["CRM Update","Business Systems",auto,"Syncs status everywhere","Automated"],
+    ["AI Response Generation","AI",ai,"Drafts reply / next step","AI-assisted"],
+    ["Approve","Human Action","Human","Person checks before send","Human approval"],
+    [comm,"Communication",auto,"Sends update","Automated"],
+    ["Reporting Dashboard","Business Systems",auto,"Live status & reports","Automated"]
+  ];
+  let list= plan==="A"? base.filter((_,i)=>[0,1,2,5,6].includes(i)) : plan==="C"? [...base,["AI Quality Check","AI",ai,"Audits accuracy weekly","AI-assisted"]] : base;
+  return list.map((b,i)=>({id:uid(),label:b[0],cat:b[1],tool:b[2],note:b[3],mode:b[4],x:40+(i%2)*300,y:30+i*0}));
+}
+function buildTimeline(){
+  const days=P.plan==="A"?5:P.plan==="C"?20:12;
+  const s=P.schedule.start?new Date(P.schedule.start):new Date();
+  const add=n=>{const d=new Date(s);d.setDate(d.getDate()+n);return iso(d)};
+  P.timeline=[
+    {w:"WEEK 1 — Understand",items:[["Discovery","Day 1–2",add(0)],["Current-state mapping","Day 3",add(2)],["Solution design","Day 4–5",add(3)]]},
+    {w:"WEEK 2 — Build",items:[["Development","Day 6–8",add(5)],["Integration","Day 9–10",add(8)]]},
+    {w:"WEEK 3 — Launch",items:[["Testing","Day 11–12",add(10)],["User acceptance","Day 13",add(12)],["Deployment","Day 14",add(13)]]},
+    {w:"WEEK 4+ — Improve",items:[["Monitor → Improve → Scale","Ongoing",add(14)]]}
+  ];
+  if(!P.schedule.target){const d=new Date(s);d.setDate(d.getDate()+days);P.schedule.target=iso(d)}
+  if(!P.schedule.launch)P.schedule.launch=add(13);
+  if(!P.schedule.test)P.schedule.test=add(10);
+  if(!P.schedule.review)P.schedule.review=add(4);
+}
+/* ============ SAVE / LOAD ============ */
+function persist(silent){P.updated=new Date().toISOString();store(LS_C,P);
+  const i=projects.findIndex(x=>x.id===P.id); if(i>=0)projects[i]=JSON.parse(JSON.stringify(P)); else projects.push(JSON.parse(JSON.stringify(P)));
+  store(LS_P,projects); if(!silent)markSaved(); else markSaved();}
+function saveProject(manual=true){if(!P)return;persist(); if(manual)toast("Your project has been saved.");}
+function toast(msg,err){const a=document.getElementById("app");const d=document.createElement("div");d.className="alert "+(err?"err":"ok");d.style.position="fixed";d.style.bottom="18px";d.style.left="50%";d.style.transform="translateX(-50%)";d.style.zIndex="99";d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+window.addEventListener("beforeunload",e=>{const d=document.getElementById("saveDot");if(d&&d.classList.contains("dirty")){e.preventDefault();e.returnValue=""}});
+setInterval(()=>{if(P&&document.getElementById("saveDot")?.classList.contains("dirty"))persist(true)},15000);
+/* ============ NAV ============ */
+function go(s){screen=s;render();window.scrollTo({top:0})}
+function renderSteps(){document.getElementById("steps").innerHTML=STEPS.map(([k,t])=>`<div class="step ${k===screen?"active":""}" onclick="go('${k}')"><span>${t}</span><b>${({welcome:"Start",discover:"Describe",analyze:"Analyze",method:"Method",builder:"Design",tools:"Choose",options:"Compare",preview:"Preview",plan:"Schedule",review:"Submit",manage:"Save"})[k]}</b></div>`).join("")}
+/* ============ RENDER ============ */
+function render(){renderSteps();setConnLabel();const el=document.getElementById("app");
+  if(!P){P=load(LS_C,null); if(!P){P=blankProject();}}
+  const R={welcome:vWelcome,discover:vDiscover,analyze:vAnalyze,method:vMethod,builder:vBuilder,tools:vTools,options:vOptions,preview:vPreview,plan:vPlan,review:vReview,manage:vManage}[screen];
+  el.innerHTML=R(); if(screen==="builder")drawCanvas();
+}
+function navBtns(prev,next,extra=""){return `<div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap" class="no-print">${prev?`<button class="btn btn-line" onclick="go('${prev}')">← Back</button>`:""}${extra}<button class="btn btn-navy" onclick="go('${next}')">Continue →</button></div>`}
+function field(k,label,ph,type="text"){return `<label class="f">${label}</label><input value="${esc(P.client[k]||"")}" oninput="P.client.${k}=this.value;markDirty()" placeholder="${ph}">`}
+/* ---- screens ---- */
+function vWelcome(){return `<div class="hero"><div class="eyebrow" style="color:var(--sand)">Prime Kreatives · AI Automation Builder</div>
+<h1>AI Automation & <em>System Improvement Builder</em></h1>
+<p><b>Turn business problems into smarter systems.</b><br>Identify the problem. Design the solution. Choose the tools. Visualize the workflow. Build a plan — no technical knowledge needed.</p>
+<div class="hero-actions"><button class="btn btn-primary" onclick="go('discover')">Start building →</button><button class="btn btn-ghost" onclick="loadDemo()">View sample project</button></div>
+<div class="mono" style="margin-top:18px;font-size:11px;color:rgba(244,241,234,.7)">DESCRIBE → ANALYZE → DRAG → CHOOSE → DESIGN → COMPARE → SCHEDULE → SAVE → EXPORT → SUBMIT</div></div>
+<div class="grid g3" style="margin-top:16px">
+${[["🔍","1. Describe","Tell us the problem in plain words."],["🧩","2. Design","Drag steps onto a visual workflow."],["📅","3. Deliver","Compare plans, schedule & submit."]].map(x=>`<div class="card"><div style="font-size:24px">${x[0]}</div><b style="color:var(--navy)">${x[1]}</b><p class="lede" style="font-size:13.5px">${x[2]}</p></div>`).join("")}
+</div>
+<div class="card" style="margin-top:16px"><div class="eyebrow">Our method</div><h2>Identify → Design → Build → Optimize</h2><p class="lede">1–3 days understand · 2–5 days blueprint · 3–10 days build · ongoing optimization. <a href="#" onclick="go('method');return false">See the 4-stage method</a></p></div>`}
+function vDiscover(){return `<div class="card"><div class="eyebrow">Step 1 · Discover</div><h2>What would you like to improve?</h2>
+<p class="lede">Pick one area, then describe the problem in your own words. Plain language is perfect.</p>
+<div class="area-cards">${AREAS.map(([a,ic])=>`<div class="area ${P.area===a?"sel":""}" onclick="P.area='${a}';markDirty();render()"><div class="ic">${ic}</div><b>${a}</b></div>`).join("")}</div>
+<label class="f">Tell us about the problem</label><textarea oninput="P.problem=this.value;markDirty()" placeholder="Our team spends too much time manually updating customer records after every call.">${esc(P.problem)}</textarea>
+<div class="grid g2"><div><label class="f">What is happening today?</label><textarea oninput="P.current=this.value;markDirty()" placeholder="e.g. Staff copy form answers into a spreadsheet, then re-type them into email...">${esc(P.current)}</textarea></div>
+<div><label class="f">What would you like to happen instead?</label><textarea oninput="P.desired=this.value;markDirty()" placeholder="e.g. When a form arrives, records update themselves and the customer gets a fast reply...">${esc(P.desired)}</textarea></div></div>
+<label class="f">How important is this improvement?</label><div class="pill-row">${["Low","Medium","High","Critical"].map(x=>`<div class="pill ${P.importance===x?"sel":""}" onclick="P.importance='${x}';markDirty();render()">${x}</div>`).join("")}</div>
+${navBtns("welcome","analyze",`<button class="btn btn-line" onclick="analyzeProblem();persist(true);go('analyze')">🔍 Analyze my problem</button>`)}</div>`}
+function vAnalyze(){if(!P.analysis)analyzeProblem();const a=P.analysis;
+return `<div class="grid g2"><div class="card"><div class="eyebrow">Step 2 · AI Analysis (plain English)</div><h2>Problem summary</h2><p>${esc(a.summary)}</p>
+<h3>Current process (today)</h3><div class="tl">${a.currentSteps.map(s=>`<div class="tl-item">${esc(s)}</div>`).join("")}</div></div>
+<div class="card"><h3>🚩 Pain points found</h3><div style="display:flex;gap:6px;flex-wrap:wrap">${a.pains.map(p=>`<span class="badge gold">${esc(p)}</span>`).join("")}</div>
+<h3>💡 Automation opportunities</h3>${a.opps.map(o=>`<div style="border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px"><b style="color:var(--navy)">${esc(o.part)}</b> — <span class="badge ${o.verdict.includes("Automat")?"green":"gray"}">${esc(o.verdict)}</span><div style="font-size:13px;color:var(--slate)">${esc(o.why)}</div></div>`).join("")}
+<div class="alert info">We don't automate just because we can. Judgement and customer relationships stay human.</div></div></div>
+${navBtns("discover","method")}`}
+function vMethod(){const S=[["STAGE 1 — Identify & Understand","1–3 days",["Gather insights","Define the problem","Set objectives","Document current process","Identify opportunity"],"Problem Statement + Current-State Workflow"],["STAGE 2 — Analyze & Design","2–5 days",["Explore solutions","Design the solution","Validate feasibility","Get feedback","Create solution blueprint"],"Solution Blueprint + Future-State Workflow"],["STAGE 3 — Build & Automate","3–10 days",["Build the solution","Test thoroughly","Integrate & automate","Deploy","Launch automation"],"Working AI Automation / System"],["STAGE 4 — Monitor & Optimize","Ongoing",["Monitor performance","Analyze & improve","Iterate & scale","Document & share","Continuous improvement"],"Optimization Roadmap"]];
+return `<div class="card"><div class="eyebrow">Prime Kreatives 4-stage method</div><h2>How your project will run</h2><div class="method">${S.map((s,i)=>`<div class="stage"><span class="badge gold">${s[1]}</span><div style="margin-top:6px"><b>${s[0]}</b></div><ol>${s[2].map(x=>`<li>${x}</li>`).join("")}</ol><div style="font-size:12px;color:var(--muted)">📦 ${s[3]}</div></div>`).join("")}</div>${navBtns("analyze","builder")}</div>`}
+/* builder */
+let selNode=null, dragId=null;
+function vBuilder(){const cats=Object.keys(TOOLBOX);
+return `<div class="grid g-builder"><div class="card toolbox no-print"><div class="eyebrow">Toolbox — drag or click +</div>
+<input id="tbSearch" placeholder="Search blocks..." oninput="filterToolbox(this.value)" style="margin-bottom:6px">
+${cats.map(c=>`<div class="cat-title">${c}</div><div data-cat="${c}">${TOOLBOX[c].map(b=>`<div class="tool-item" draggable="true" data-label="${b[0]}" ondragstart="event.dataTransfer.setData('text','${b[0]}')" onclick="addNode('${b[0].replace(/'/g,"")}')"><div class="t-ic">${b[1]}</div><div><b>${b[0]}</b><span>${c} · click to add</span></div></div>`).join("")}</div>`).join("")}
+<div class="alert info" style="font-size:12px">Tip: every step gets a plain-English explanation. Hover the ⓘ in edit panel.</div></div>
+<div class="card"><div class="eyebrow">Step 3 · Workflow builder</div><h2>Drag → Choose → Design</h2>
+<p class="lede">Drop blocks below. Click a node to edit, reorder with ↑ ↓, assign <b>Automated / AI-assisted / Human approval / Manual</b>.</p>
+<div style="display:flex;gap:8px;margin:10px 0;flex-wrap:wrap" class="no-print"><button class="btn btn-line btn-sm" onclick="autoGen()">✨ Auto-generate from plan ${P.plan}</button><button class="btn btn-line btn-sm" onclick="clearNodes()">Clear</button><span class="badge gray">${P.nodes.length} steps</span></div>
+<div class="canvas" id="canvas" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="dropNode(event)"><svg id="wires" class="arrow-line" style="inset:0;width:100%;height:100%"></svg><div id="nodes"></div></div>
+${navBtns("method","tools")}</div>
+<div class="card assistant-col"><div class="eyebrow">Smart assistant</div><h3 style="margin-top:0">Need help designing?</h3><div id="tips">${assistantTips()}</div>
+<label class="f">Edit selected step</label><div id="editor">${editorHtml()}</div></div></div>`}
+function editorHtml(){const n=P.nodes.find(x=>x.id===selNode);if(!n)return `<p class="lede" style="font-size:13px">Select a node on the canvas to edit its tool, action and checkpoint.</p>`;
+return `<label class="f">Step name</label><input value="${esc(n.label)}" oninput="updNode('${n.id}','label',this.value)">
+<label class="f">Tool <span title="The app that does this step">ⓘ</span></label><input value="${esc(n.tool)}" oninput="updNode('${n.id}','tool',this.value)">
+<label class="f">What happens here?</label><input value="${esc(n.note||"")}" oninput="updNode('${n.id}','note',this.value)">
+<label class="f">How is it done? ⓘ <span style="font-weight:400;color:var(--muted)">Automated = system does it · AI-assisted = AI drafts · Human approval = person checks · Manual = person does it</span></label>
+<select onchange="updNode('${n.id}','mode',this.value)">${["Automated","AI-assisted","Human approval","Manual"].map(m=>`<option ${n.mode===m?"selected":""}>${m}</option>`).join("")}</select>
+<div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap"><button class="mini-btn" onclick="moveNode('${n.id}',-1)">↑</button><button class="mini-btn" onclick="moveNode('${n.id}',1)">↓</button><button class="mini-btn" onclick="dupNode('${n.id}')">Duplicate</button><button class="mini-btn" onclick="delNode('${n.id}')">Delete</button></div>`}
+function assistantTips(){const has=P.nodes.map(n=>n.label);const tips=[];
+if(!has.some(h=>/Trig|New |Form|Manual|Scheduled|Webhook/i.test(h)))tips.push(["Add a starting trigger","Every workflow needs something that starts it (e.g. New Lead, Form Submission).","New Lead"]);
+if(has.some(h=>/AI Response|AI Classification/i.test(h))&&!has.some(h=>/Approve|Review/i.test(h)))tips.push(["Missing human checkpoint","You have AI doing customer-facing work with no review. Add an approval step before it reaches the customer.","Approve"]);
+if(!has.some(h=>/Dashboard|Report/i.test(h)))tips.push(["Add visibility","No reporting step — add a dashboard so you can see status without asking.","Reporting Dashboard"]);
+if(!has.length)tips.push(["Start from a template","Empty canvas? Auto-generate a sensible workflow for your plan, then adjust it.","__auto"]);
+if(!tips.length)return `<div class="alert ok">Looks good — you have a trigger, AI help, a human checkpoint and reporting. Nice balance.</div>`;
+return tips.map((t,i)=>`<div class="alert info"><b>${t[0]}</b><br>${t[1]}<div style="margin-top:8px;display:flex;gap:8px"><button class="mini-btn" onclick="applyTip(${i})">Add step</button><button class="mini-btn" onclick="this.closest('.alert').remove()">Keep as is</button></div></div>`).join("")}
+function vTools(){const R=recommendTools();const T=P.tools;
+const grp=(t,arr,k)=>`<label class="f">${t}</label><div class="pill-row">${arr.map(x=>`<div class="pill ${T[k]===x?"sel":""}" onclick="P.tools.${k}='${x}';P.tools.mode='custom';markDirty();render()">${x}</div>`).join("")}</div>`;
+return `<div class="grid g2"><div class="card"><div class="eyebrow">Step 4 · Tool selection</div><h2>Use your tools — or let us recommend</h2>
+<div class="pill-row" style="margin:10px 0"><div class="pill ${T.mode==="recommend"?"sel":""}" onclick="P.tools.mode='recommend';markDirty();render()">✨ Recommend the best tools for me</div><div class="pill ${T.mode==="custom"?"sel":""}" onclick="P.tools.mode='custom';markDirty();render()">Use my preferred tools</div></div>
+${grp("🤖 AI",AI_TOOLS,"ai")}${grp("🔧 Automation",AUTO_TOOLS,"automation")}${grp("💾 Data",DATA_TOOLS,"data")}${grp("✉️ Communication",COMM_TOOLS,"comm")}
+</div><div class="card"><div class="eyebrow">Intelligent recommendation · LIVE logic</div><h2>What we'd pick & why</h2>
+<div class="alert ok"><b>Recommended: ${R.rec}</b><br>${R.why}</div>
+<div class="alert info"><b>Alternative: ${R.alt}</b><br>${R.why2}</div>
+<div class="alert info"><b>Advanced: ${R.adv}</b><br>${R.why3}</div>
+<button class="btn btn-navy btn-sm" onclick="applyRec()">Apply recommended tools</button>
+<p class="lede" style="font-size:12.5px;margin-top:10px">Connect Systems Automatically = lets one system send information to another automatically (sometimes called an API / webhook).</p></div></div>${navBtns("builder","options")}`}
+function vOptions(){const D=planData();
+return `<div class="card"><div class="eyebrow">Step 5 · Three solution options</div><h2>Compare approaches</h2><div class="grid g3">
+${["A","B","C"].map(k=>{const p=D[k];return `<div class="plan ${P.plan===k?"sel":""}"><span class="badge ${P.plan===k?"gold":"gray"}">${p.tag}</span><h3 style="font-size:17px">${p.name}</h3>
+<div class="kv"><dt>Technology</dt><dd>${p.detail}</dd><dt>Setup</dt><dd>${p.days}</dd><dt>Automation</dt><dd>${p.auto}</dd><dt>Maintenance</dt><dd>${p.maint}</dd><dt>Cost</dt><dd>${p.cost}</dd></div>
+<button class="btn ${P.plan===k?"btn-primary":"btn-line"} btn-sm" style="margin-top:10px" onclick="P.plan='${k}';buildTimeline();markDirty();render()">✓ Select this plan</button></div>`}).join("")}</div>
+<h3>Side-by-side</h3><div style="overflow:auto"><table class="cmp"><tr><th></th><th>Simple (A)</th><th>Balanced (B)</th><th>Advanced (C)</th></tr>
+${[["Cost","Low","Medium","Higher"],["Complexity","Low","Medium","High"],["Automation","Medium","High","Very High"],["Scalability","Medium","High","Very High"],["Setup time","Fast (3–5d)","Moderate (5–10d)","Longer (2–4w)"],["Maintenance","Low","Medium","Higher"]].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}</table></div>
+${navBtns("tools","preview",`<button class="btn btn-line" onclick="P.nodes=autoNodesForPlan(P.plan);layoutNodes();markDirty();render()">✨ Generate workflow for plan ${P.plan}</button>`)}</div>`}
+function vPreview(){if(!P.nodes.length){P.nodes=autoNodesForPlan(P.plan);layoutNodes()}
+const flow=P.nodes.map((n,i)=>`<div style="text-align:center"><div style="background:#fff;border:1.5px solid ${n.mode==="Human approval"?"#e0a35c":"var(--line2)"};border-radius:12px;padding:10px;max-width:420px;margin:0 auto"><b style="color:var(--navy);font-size:13px">${i+1}. ${esc(n.label)}</b><div style="font-size:11.5px;color:var(--muted)">${esc(n.cat)} · ${esc(n.tool)} · ${esc(n.mode)}</div></div>${i<P.nodes.length-1?'<div style="color:var(--gold);font-size:20px;line-height:1.4">↓</div>':""}</div>`).join("");
+return `<div class="grid g2"><div class="card"><div class="eyebrow">Auto workflow · Plan ${P.plan}</div><h2>Your future workflow</h2>${flow}</div>
+<div><div class="mock"><div class="eyebrow" style="color:var(--sand)">Project mockup — concept preview</div><b class="serif" style="font-size:20px">Your future system</b><div style="font-size:12px;color:rgba(244,241,234,.7)">Concept only — not yet connected to real systems.</div>
+<div class="mock-grid"><div class="stat"><span class="mono" style="font-size:10px">AUTOMATED</span><br><b>${Math.round(P.nodes.filter(n=>n.mode==="Automated").length/Math.max(1,P.nodes.length)*100)}%</b></div><div class="stat"><span class="mono" style="font-size:10px">STEPS</span><br><b>${P.nodes.length}</b></div><div class="stat"><span class="mono" style="font-size:10px">AI ACTIONS</span><br><b>${P.nodes.filter(n=>n.cat==="AI").length}</b></div><div class="stat"><span class="mono" style="font-size:10px">HUMAN CHECKS</span><br><b>${P.nodes.filter(n=>n.mode.includes("Human")).length}</b></div></div>
+<div style="font-size:13px"><b style="color:var(--sand)">● Automation status:</b> ${P.plan==="A"?"Running daily":"Live · monitoring"} &nbsp; <b style="color:var(--sand)">Recent activity:</b> ${esc(P.nodes[0]?.label||"—")} → ${esc(P.nodes[1]?.label||"—")} &nbsp; <b style="color:var(--sand)">Tasks:</b> Review queue (2) · Approvals (1) &nbsp; <b style="color:var(--sand)">Reports:</b> Weekly summary every Monday</div></div>
+<div class="card" style="margin-top:14px"><h3>Download / export</h3><div style="display:flex;gap:8px;flex-wrap:wrap" class="no-print"><button class="btn btn-line btn-sm" onclick="window.print()">🖨️ PDF (print)</button><button class="btn btn-line btn-sm" onclick="exportJSON()">JSON</button><button class="btn btn-line btn-sm" onclick="exportCSV()">CSV</button><button class="btn btn-line btn-sm" onclick="exportPNG()">PNG workflow</button></div></div></div></div>
+${navBtns("options","plan")}`}
+function vPlan(){if(!P.timeline.length)buildTimeline();const s=P.schedule;
+const d=(k,l)=>`<div><label class="f">${l}</label><input type="date" value="${s[k]||""}" onchange="P.schedule.${k}=this.value;markDirty();render()"></div>`;
+return `<div class="grid g2"><div class="card"><div class="eyebrow">Step 6 · Timeline builder</div><h2>Your implementation plan</h2>
+${P.timeline.map(g=>`<h3>${g.w}</h3><div class="tl">${g.items.map(it=>`<div class="tl-item"><b>${it[0]}</b> <span class="badge gray">${it[1]}</span> <input type="date" value="${it[2]}" style="width:150px;padding:5px" onchange="updTl('${g.w}','${it[0]}',this.value)"> <span class="mono" style="font-size:11px">${it[2]}</span></div>`).join("")}</div>`).join("")}
+<label class="f">Add milestone</label><div style="display:flex;gap:8px"><input id="msName" placeholder="e.g. Staff training"><button class="mini-btn" onclick="addMilestone()">+ Add</button></div></div>
+<div class="card"><div class="eyebrow">Scheduling</div><h2>Key dates</h2><div class="grid g2">${d("start","Start date")}${d("target","Target completion")}${d("review","Design review")}${d("test","Testing date")}${d("launch","Launch date")}${d("optimize","Optimization review")}</div>
+<label class="f">Project notes</label><textarea oninput="P.notes=this.value;markDirty()" placeholder="Anything Prime Kreatives should know...">${esc(P.notes)}</textarea>
+<label class="f">Project status</label><select onchange="P.status=this.value;markDirty()">${["Draft","Discovery","Design","Build","Testing","Deployed","Optimization"].map(x=>`<option ${P.status===x?"selected":""}>${x}</option>`).join("")}</select>
+<div style="margin-top:12px"><button class="btn btn-navy btn-sm" onclick="buildTimeline();markDirty();render()">↻ Regenerate timeline from plan ${P.plan}</button></div></div></div>${navBtns("preview","review")}`}
+function vReview(){const D=planData()[P.plan];const R=recommendTools();
+return `<div class="grid g2"><div class="card"><div class="eyebrow">Step 7 · Client information</div><h2>Who is this project for?</h2>
+<div class="grid g2">${field("name","Client name","Jane Dela Cruz")}${field("company","Company","Dela Cruz Trading")}${field("email","Email address","you@company.com")}${field("phone","Phone number","+63 ...")}${field("industry","Industry","Retail")}${field("projectName","Project name","Automate Lead Follow-Up")}</div>
+<div id="sendMsg"></div></div>
+<div class="card"><div class="eyebrow">Your automation plan</div><h2>${esc(P.client.projectName||"Your automation plan")}</h2>
+<div class="kv"><dt>Problem</dt><dd>${esc(P.analysis?.summary||P.problem||"—")}</dd><dt>Solution</dt><dd>${D.name} — ${D.detail}</dd><dt>Tools</dt><dd>${esc([P.tools.ai,P.tools.automation,P.tools.data,P.tools.comm].filter(Boolean).join(" + ")||R.rec)}</dd><dt>Workflow</dt><dd>${P.nodes.length} steps, ${P.nodes.filter(n=>n.mode==="Automated").length} automated</dd><dt>Timeline</dt><dd>${esc(P.schedule.start||"—")} → ${esc(P.schedule.target||"—")}</dd><dt>Complexity</dt><dd>${P.plan==="A"?"Low":P.plan==="B"?"Medium":"High"}</dd><dt>Plan</dt><dd>Plan ${P.plan}</dd></div>
+<h3>Next steps</h3><ol style="margin-left:18px;font-size:13.5px"><li>Discovery</li><li>Solution approval</li><li>Development</li><li>Testing</li><li>Deployment</li><li>Optimization</li></ol>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px" class="no-print">
+<button class="btn btn-primary" onclick="submitProject()">📨 Submit to Prime Kreatives</button>
+<button class="btn btn-line btn-sm" onclick="window.print()">Download PDF</button>
+<button class="btn btn-line btn-sm" onclick="saveProject()">Save project</button>
+<button class="btn btn-line btn-sm" onclick="go('discover')">Edit project</button></div>
+<div class="alert info" style="font-size:12px">Backend status: <b>${settings.endpoint?"CONNECTED — sends via secure backend":"DEMO — opens your email app to prime.kreatives@gmail.com"}</b>. No passwords or API keys are stored in this page. Configure in Projects → Connection settings.</div></div></div>
+${navBtns("plan","manage")}`}
+function vManage(){return `<div class="grid g2"><div class="card"><div class="eyebrow">Save · Update · Reopen</div><h2>Projects (${projects.length})</h2>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px" class="no-print"><button class="btn btn-navy btn-sm" onclick="saveProject()">💾 Save / Update</button><button class="btn btn-line btn-sm" onclick="newProject()">+ New</button><button class="btn btn-line btn-sm" onclick="duplicateProject()">Duplicate</button><button class="btn btn-line btn-sm" onclick="exportJSON()">Export JSON</button><label class="btn btn-line btn-sm">Import JSON<input type="file" id="imp" accept=".json" class="hidden" onchange="importJSON(this)"></label><button class="btn btn-line btn-sm" onclick="loadDemo()">Load demo</button></div>
+<div style="overflow:auto"><table class="proj"><tr><th>ID</th><th>Client / Project</th><th>Updated</th><th>Status</th><th>Plan</th><th></th></tr>
+${projects.map(p=>`<tr><td class="mono" style="font-size:11px">${p.id}</td><td><b>${esc(p.client.projectName||"(untitled)")}</b><br><span style="color:var(--muted)">${esc(p.client.name||"")} · ${esc(p.area||"")}</span></td><td style="font-size:12px">${(p.updated||"").slice(0,10)}</td><td><span class="badge gold">${esc(p.status||"")}</span></td><td>${p.plan}</td><td><button class="mini-btn" onclick="openProject('${p.id}')">Open</button> <button class="mini-btn" onclick="deleteProject('${p.id}')">Del</button></td></tr>`).join("")||"<tr><td colspan=6>No saved projects yet.</td></tr>"}</table></div></div>
+<div class="card"><div class="eyebrow">Connection settings · secure backend</div><h2>Email integration</h2>
+<p class="lede" style="font-size:13px">Paste your Google Apps Script web-app URL to send via Gmail securely. Without it, submit opens a pre-filled email to <b>prime.kreatives@gmail.com</b>. Status: <b>${settings.endpoint?"CONNECTED":"NOT CONNECTED (demo)"}</b></p>
+<label class="f">Apps Script endpoint (https://script.google.com/.../exec)</label><input id="ep" value="${esc(settings.endpoint)}" placeholder="https://script.google.com/macros/s/.../exec">
+<div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-navy btn-sm" onclick="settings.endpoint=document.getElementById('ep').value.trim();settings.connected=!!settings.endpoint;store(LS_S,settings);render();toast('Connection settings saved.')">Save connection</button><button class="btn btn-line btn-sm" onclick="settings={endpoint:'',connected:false};store(LS_S,settings);render()">Disconnect</button></div>
+<div class="alert info" style="font-size:12px">Apps Script should accept POST JSON {subject, body, project} and use GmailApp.sendEmail("prime.kreatives@gmail.com", subject, body). Never put Gmail passwords or API keys in this page.</div></div></div>`}
+/* ============ BUILDER OPS ============ */
+function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function addNode(label){if(!label||label==="__auto"){autoGen();return}const cat=CAT_OF[label]||"Triggers";P.nodes.push({id:uid(),label,cat,tool:defaultTool(cat),note:"",mode:cat==="Human Action"?"Human approval":cat==="AI"?"AI-assisted":"Automated",x:40,y:30});layoutNodes();markDirty();persist(true);render()}
+function defaultTool(cat){return cat==="AI"?(P.tools.ai||"OpenAI"):cat==="Automation"?(P.tools.automation||"Make"):cat==="Data"?(P.tools.data||"Google Sheets"):cat==="Communication"?(P.tools.comm||"Gmail"):cat==="Triggers"?"Form":"Human"}
+function dropNode(e){e.preventDefault();const label=e.dataTransfer.getData("text");if(label)addNode(label)}
+function filterToolbox(q){q=q.toLowerCase();document.querySelectorAll(".tool-item").forEach(el=>el.style.display=el.dataset.label.toLowerCase().includes(q)?"":"none")}
+function layoutNodes(){P.nodes.forEach((n,i)=>{n.x=40+(i%2)*300;n.y=20+Math.floor(i/2)*150})}
+function drawCanvas(){const c=document.getElementById("nodes");if(!c)return;const cv=document.getElementById("canvas");
+c.innerHTML=P.nodes.length?"":`<div class="empty-canvas">Drag blocks here — or <a href="#" onclick="autoGen();return false">auto-generate a workflow</a>.<br>Example: New Lead → Form → AI Qualification → CRM → Email → Human Review → Follow-up</div>`;
+P.nodes.forEach(n=>{const d=document.createElement("div");d.className="wf-node mode-"+(n.mode==="Human approval"?"Human":n.mode==="Automated"?"Automated":"");if(n.id===selNode)d.classList.add("sel");
+d.style.left=(n.x??40)+"px";d.style.top=(n.y??20)+"px";
+d.innerHTML=`<div class="nm">${esc(n.label)}</div><div class="meta">${esc(n.cat)} · ${esc(n.tool)} · <b>${esc(n.mode)}</b></div>${n.note?`<div class="meta">${esc(n.note)}</div>`:""}<div class="row"><button class="mini-btn" onclick="event.stopPropagation();moveNode('${n.id}',-1)">↑</button><button class="mini-btn" onclick="event.stopPropagation();moveNode('${n.id}',1)">↓</button><button class="mini-btn" onclick="event.stopPropagation();dupNode('${n.id}')">⧉</button><button class="mini-btn" onclick="event.stopPropagation();delNode('${n.id}')">✕</button></div>`;
+d.onpointerdown=e=>{if(e.target.tagName==="BUTTON")return;selNode=n.id;dragId=n.id;const sx=e.clientX-n.x,sy=e.clientY-n.y;
+const mv=ev=>{n.x=Math.max(0,ev.clientX-sx);n.y=Math.max(0,ev.clientY-sy);d.style.left=n.x+"px";d.style.top=n.y+"px";drawWires()};
+const up=()=>{window.removeEventListener("pointermove",mv);window.removeEventListener("pointerup",up);markDirty();drawWires();const ed=document.getElementById("editor");if(ed)ed.innerHTML=editorHtml();document.querySelectorAll(".wf-node").forEach(x=>x.classList.remove("sel"));d.classList.add("sel")};
+window.addEventListener("pointermove",mv);window.addEventListener("pointerup",up)};
+d.onclick=()=>{selNode=n.id;const ed=document.getElementById("editor");if(ed)ed.innerHTML=editorHtml();document.querySelectorAll(".wf-node").forEach(x=>x.classList.remove("sel"));d.classList.add("sel")};
+c.appendChild(d)});drawWires()}
+function drawWires(){const svg=document.getElementById("wires");if(!svg)return;const cv=document.getElementById("canvas");const r=cv.getBoundingClientRect();svg.setAttribute("viewBox",`0 0 ${cv.scrollWidth} ${cv.scrollHeight}`);
+let s="";const sorted=[...P.nodes].sort((a,b)=>a.y-b.y||a.x-b.x);
+sorted.forEach((n,i)=>{if(i===sorted.length-1)return;const m=sorted[i+1];const x1=n.x+125,y1=n.y+95,x2=m.x+125,y2=m.y;s+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#B88917" stroke-width="2" stroke-dasharray="6 4"/><polygon points="${x2-6},${y2-12} ${x2+6},${y2-12} ${x2},${y2-2}" fill="#B88917"/>`});
+svg.innerHTML=s}
+function updNode(id,k,v){const n=P.nodes.find(x=>x.id===id);if(n){n[k]=v;markDirty();persist(true);drawCanvas();const ed=document.getElementById("editor");}}
+function moveNode(id,d){const i=P.nodes.findIndex(x=>x.id===id);const j=i+d;if(i<0||j<0||j>=P.nodes.length)return;[P.nodes[i],P.nodes[j]]=[P.nodes[j],P.nodes[i]];layoutNodes();markDirty();persist(true);render()}
+function dupNode(id){const n=P.nodes.find(x=>x.id===id);if(n){P.nodes.push({...n,id:uid(),x:(n.x||40)+20,y:(n.y||20)+20});markDirty();persist(true);render()}}
+function delNode(id){if(!confirm("Delete this step?"))return;P.nodes=P.nodes.filter(x=>x.id!==id);if(selNode===id)selNode=null;markDirty();persist(true);render()}
+function clearNodes(){if(!P.nodes.length||confirm("Clear all steps?")){P.nodes=[];markDirty();render()}}
+function autoGen(){P.nodes=autoNodesForPlan(P.plan);layoutNodes();markDirty();persist(true);render();toast("Workflow generated for Plan "+P.plan+".")}
+function applyTip(i){const map=["New Lead","Approve","Reporting Dashboard"];const labels=["trigger","review","report"];addNode(map[i]||"Review")}
+function applyRec(){const R=recommendTools();const pick=s=>s.split("+")[0].trim();
+P.tools.ai=AI_TOOLS.find(a=>R.rec.includes(a.split(" ")[0]))||"ChatGPT / OpenAI";
+P.tools.automation=AUTO_TOOLS.find(a=>R.rec.includes(a.split(" ")[0]))||"Make";
+P.tools.data=DATA_TOOLS.find(a=>R.rec.includes(a.split(" ")[0]))||"Google Sheets";
+P.tools.comm=COMM_TOOLS.find(a=>R.rec.includes(a.split(" ")[0]))||"Gmail";
+P.tools.mode="recommend";markDirty();persist(true);render();toast("Recommended tools applied.")}
+function addMilestone(){const v=document.getElementById("msName").value.trim();if(!v)return;P.timeline.push({w:"Milestones",items:[[v,"Custom",iso(new Date())]]});markDirty();persist(true);render()}
+function updTl(g,name,val){const grp=P.timeline.find(x=>x.w===g);if(grp){const it=grp.items.find(x=>x[0]===name);if(it)it[2]=val}markDirty();persist(true)}
+/* ============ PROJECT OPS ============ */
+function newProject(){if(document.getElementById("saveDot")?.classList.contains("dirty")&&!confirm("Discard unsaved changes?"))return;P=blankProject();persist(true);go("discover")}
+function openProject(id){P=JSON.parse(JSON.stringify(projects.find(x=>x.id===id)));store(LS_C,P);selNode=null;go("discover");toast("Project opened.")}
+function deleteProject(id){if(!confirm("Delete project "+id+"? This cannot be undone."))return;projects=projects.filter(x=>x.id!==id);store(LS_P,projects);if(P&&P.id===id){P=blankProject();store(LS_C,P)}render();toast("Project deleted.")}
+function duplicateProject(){const c=JSON.parse(JSON.stringify(P));c.id="PK-"+Date.now().toString(36).toUpperCase();c.client.projectName=(c.client.projectName||"Untitled")+" (copy)";projects.push(c);store(LS_P,projects);P=c;store(LS_C,P);render();toast("Project duplicated.")}
+function loadDemo(){P=blankProject();P.client={name:"Maria Santos",company:"Santos Realty",email:"maria@santosrealty.com",phone:"+63 900 000 0000",industry:"Real Estate",projectName:"Automate Lead Follow-Up"};
+P.area="Sales";P.problem="Our team spends too much time manually updating customer records after every call and website inquiry.";P.current="Website form answers are copied into a spreadsheet, then re-typed into email follow-ups. Leads wait hours.";P.desired="When a form arrives, records update themselves, AI drafts a qualification note, and the customer gets a fast personal reply after a quick sales check.";P.importance="High";
+P.tools={ai:"ChatGPT / OpenAI",automation:"Make",data:"Google Sheets",comm:"Gmail",mode:"recommend"};P.plan="B";
+analyzeProblem();P.nodes=autoNodesForPlan("B");layoutNodes();buildTimeline();P.status="Design";persist(true);selNode=null;go("preview");toast("Sample project loaded: Automate Lead Follow-Up.")}
+/* ============ EXPORT ============ */
+function exportJSON(){persist(true);const blob=new Blob([JSON.stringify(P,null,2)],{type:"application/json"});dl(blob,P.id+".json")}
+function dl(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+function exportCSV(){const rows=[["field","value"],["id",P.id],["project",P.client.projectName],["client",P.client.name],["company",P.client.company],["email",P.client.email],["area",P.area],["importance",P.importance],["plan",P.plan],["problem",P.problem],["tools",[P.tools.ai,P.tools.automation,P.tools.data,P.tools.comm].join(" + ")],["timeline",P.schedule.start+" -> "+P.schedule.target],["notes",P.notes]];
+P.nodes.forEach((n,i)=>rows.push(["step "+(i+1),n.label+" | "+n.cat+" | "+n.tool+" | "+n.mode]));
+dl(new Blob([rows.map(r=>r.map(c=>'"'+String(c??"").replace(/"/g,'""')+'"').join(",")).join("\n")],{type:"text/csv"}),P.id+".csv")}
+function exportPNG(){const svg=document.getElementById("wires");persist(true);
+const items=P.nodes.map((n,i)=>`${i+1}. ${n.label} [${n.tool}/${n.mode}]`).join(" → ");
+const c=document.createElement("canvas");c.width=1200;c.height=300;const x=c.getContext("2d");x.fillStyle="#FBFAF6";x.fillRect(0,0,1200,300);x.fillStyle="#0F294C";x.font="bold 26px sans-serif";x.fillText("Prime Kreatives — "+(P.client.projectName||"Workflow"),30,50);x.fillStyle="#333";x.font="18px sans-serif";
+wrap(x,items,30,100,1140,26);c.toBlob(b=>dl(b,P.id+"-workflow.png"))}
+function wrap(x,text,px,py,mw,lh){const words=text.split(" ");let line="",y=py;words.forEach(w=>{if(x.measureText(line+w).width>mw){x.fillText(line,px,y);line="";y+=lh}line+=w+" "});x.fillText(line,px,y)}
+function importJSON(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{P=JSON.parse(r.result);persist(true);render();toast("Project imported.")}catch(e){toast("Invalid project file.",true)}};r.readAsText(f)}
+/* ============ SUBMIT ============ */
+function submitProject(){persist(true);const D=planData()[P.plan];
+const subject=`New AI Automation Project — ${P.client.name||P.client.company||"New Client"}`;
+const body=`PRIME KREATIVES — NEW PROJECT SUBMISSION
+Project: ${P.client.projectName} (${P.id})
+Client: ${P.client.name} | ${P.client.company} | ${P.client.email} | ${P.client.phone} | ${P.client.industry}
+Area: ${P.area} | Importance: ${P.importance} | Plan: ${P.plan} (${D.name})
+
+PROBLEM: ${P.problem}
+TODAY: ${P.current}
+INSTEAD: ${P.desired}
+ANALYSIS: ${P.analysis?.summary||""}
+PAINS: ${(P.analysis?.pains||[]).join("; ")}
+
+SOLUTION: ${D.detail}
+TOOLS: ${[P.tools.ai,P.tools.automation,P.tools.data,P.tools.comm].join(" + ")}
+WORKFLOW: ${P.nodes.map((n,i)=>(i+1)+". "+n.label+" ["+n.tool+"/"+n.mode+"]").join(" -> ")}
+TIMELINE: ${P.schedule.start} -> ${P.schedule.target} | Review ${P.schedule.review} | Test ${P.schedule.test} | Launch ${P.schedule.launch}
+NOTES: ${P.notes}
+Next: Discovery -> Approval -> Development -> Testing -> Deployment -> Optimization`;
+const msg=document.getElementById("sendMsg");
+if(settings.endpoint){msg.innerHTML=`<div class="alert info">Sending via secure backend…</div>`;
+fetch(settings.endpoint,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({subject,body,project:P})}).then(r=>{msg.innerHTML=`<div class="alert ok">✅ Project sent to Prime Kreatives. Your work is saved.</div>`}).catch(e=>{msg.innerHTML=`<div class="alert err">We couldn't connect to the email service. Your project is still saved. <button class="mini-btn" onclick="submitProject()">Retry</button></div>`});}
+else{msg.innerHTML=`<div class="alert info">Opening your email app addressed to <b>prime.kreatives@gmail.com</b>… (connect a backend in Projects → Settings for one-click send)</div>`;
+setTimeout(()=>{window.location.href="mailto:prime.kreatives@gmail.com?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body)},400)}}
+/* boot */
+P=load(LS_C,null)||blankProject();if(!P.timeline) P.timeline=[];render();markSaved();
+</script>
+</body>
+</html>
