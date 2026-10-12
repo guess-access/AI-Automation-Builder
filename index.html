@@ -446,6 +446,7 @@ return `<div class="grid g2"><div class="card"><div class="eyebrow">Step 7 · Cl
 <h3>Next steps</h3><ol style="margin-left:18px;font-size:13.5px"><li>Discovery</li><li>Solution approval</li><li>Development</li><li>Testing</li><li>Deployment</li><li>Optimization</li></ol>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px" class="no-print">
 <button class="btn btn-primary" onclick="submitProject()">📨 Submit to Prime Kreatives</button>
+<button class="btn btn-line btn-sm" onclick="copySubmission()">📋 Copy content</button>
 <button class="btn btn-line btn-sm" onclick="window.print()">Download PDF</button>
 <button class="btn btn-line btn-sm" onclick="saveProject()">Save project</button>
 <button class="btn btn-line btn-sm" onclick="go('discover')">Edit project</button></div>
@@ -519,30 +520,33 @@ wrap(x,items,30,100,1140,26);c.toBlob(b=>dl(b,P.id+"-workflow.png"))}
 function wrap(x,text,px,py,mw,lh){const words=text.split(" ");let line="",y=py;words.forEach(w=>{if(x.measureText(line+w).width>mw){x.fillText(line,px,y);line="";y+=lh}line+=w+" "});x.fillText(line,px,y)}
 function importJSON(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{P=JSON.parse(r.result);persist(true);render();toast("Project imported.")}catch(e){toast("Invalid project file.",true)}};r.readAsText(f)}
 /* ============ SUBMIT ============ */
-function submitProject(){persist(true);const D=planData()[P.plan];
-const subject=`New AI Automation Project — ${P.client.name||P.client.company||"New Client"}`;
-const body=`PRIME KREATIVES — NEW PROJECT SUBMISSION
-Project: ${P.client.projectName} (${P.id})
-Client: ${P.client.name} | ${P.client.company} | ${P.client.email} | ${P.client.phone} | ${P.client.industry}
-Area: ${P.area} | Importance: ${P.importance} | Plan: ${P.plan} (${D.name})
-
-PROBLEM: ${P.problem}
-TODAY: ${P.current}
-INSTEAD: ${P.desired}
-ANALYSIS: ${P.analysis?.summary||""}
-PAINS: ${(P.analysis?.pains||[]).join("; ")}
-
-SOLUTION: ${D.detail}
-TOOLS: ${[P.tools.ai,P.tools.automation,P.tools.data,P.tools.comm].join(" + ")}
-WORKFLOW: ${P.nodes.map((n,i)=>(i+1)+". "+n.label+" ["+n.tool+"/"+n.mode+"]").join(" -> ")}
-TIMELINE: ${P.schedule.start} -> ${P.schedule.target} | Review ${P.schedule.review} | Test ${P.schedule.test} | Launch ${P.schedule.launch}
-NOTES: ${P.notes}
-Next: Discovery -> Approval -> Development -> Testing -> Deployment -> Optimization`;
-const msg=document.getElementById("sendMsg");
-if(settings.endpoint){msg.innerHTML=`<div class="alert info">Sending via secure backend…</div>`;
-fetch(settings.endpoint,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({subject,body,project:P})}).then(r=>{msg.innerHTML=`<div class="alert ok">✅ Project sent to Prime Kreatives. Your work is saved.</div>`}).catch(e=>{msg.innerHTML=`<div class="alert err">We couldn't connect to the email service. Your project is still saved. <button class="mini-btn" onclick="submitProject()">Retry</button></div>`});}
-else{msg.innerHTML=`<div class="alert info">Opening your email app addressed to <b>prime.kreatives@gmail.com</b>… (connect a backend in Projects → Settings for one-click send)</div>`;
+function buildSubmission(){persist(true);const D=planData()[P.plan];
+const subject=`New AI Automation Project — ${P.client.projectName||P.client.name||P.client.company||"New Client"}`;
+const L=[];
+L.push("PRIME KREATIVES — NEW PROJECT SUBMISSION","");
+L.push(`Project: ${P.client.projectName||"(untitled)"} (${P.id})`);
+L.push(`Client: ${P.client.name||"—"} | ${P.client.company||"—"} | ${P.client.email||"—"} | ${P.client.phone||"—"} | ${P.client.industry||"—"}`);
+L.push(`Area: ${P.area||"—"} | Importance: ${P.importance} | Status: ${P.status} | Plan: ${P.plan} (${D.name})`,"");
+L.push("PROBLEM:",P.problem||"—","");
+L.push("HAPPENING TODAY:",P.current||"—","");
+L.push("WANT INSTEAD:",P.desired||"—","");
+L.push("ANALYSIS:",(P.analysis&&P.analysis.summary)||"—","");
+L.push("PAIN POINTS:",((P.analysis&&P.analysis.pains)||[]).join("; ")||"—","");
+L.push("RECOMMENDED SOLUTION:",D.detail,"");
+L.push("TOOLS:",[P.tools.ai,P.tools.automation,P.tools.data,P.tools.comm].filter(Boolean).join(" + ")||"—","");
+L.push("WORKFLOW ("+P.nodes.length+" steps):");
+P.nodes.forEach((n,i)=>L.push(`  ${i+1}. ${n.label} [${n.cat} | ${n.tool} | ${n.mode}]${n.note?" — "+n.note:""}`));
+L.push("","TIMELINE:",`  Start ${P.schedule.start||"—"} -> Target ${P.schedule.target||"—"}`,`  Review ${P.schedule.review||"—"} | Test ${P.schedule.test||"—"} | Launch ${P.schedule.launch||"—"} | Optimize ${P.schedule.optimize||"—"}`,"");
+L.push("NOTES:",P.notes||"—","","Next: Discovery -> Approval -> Development -> Testing -> Deployment -> Optimization");
+return {subject,body:L.join("\n")}}
+function submitProject(){const {subject,body}=buildSubmission();const msg=document.getElementById("sendMsg");
+if(settings.endpoint){msg.innerHTML=`<div class="alert info">Sending the full automation plan to Prime Kreatives…</div>`;
+fetch(settings.endpoint,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({subject,body,project:P})}).then(r=>{if(!r.ok)throw 0;return r.json().catch(()=>({ok:true}))}).then(j=>{if(j&&j.ok===false)throw 0;msg.innerHTML=`<div class="alert ok">✅ Sent! The full automation content was emailed to Prime Kreatives. Your work is saved.</div>`}).catch(e=>{msg.innerHTML=`<div class="alert err">We couldn't reach the email service — nothing was lost, your project is saved. <button class="mini-btn" onclick="submitProject()">Retry</button> <button class="mini-btn" onclick="copySubmission()">Copy content instead</button></div>`});}
+else{msg.innerHTML=`<div class="alert info">No one-click backend connected yet — opening your email app with the full content filled in. Just hit Send. (Tip: connect the free backend in Projects → Settings, or use Copy.)</div>`;
 setTimeout(()=>{window.location.href="mailto:prime.kreatives@gmail.com?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(body)},400)}}
+function copySubmission(){const {subject,body}=buildSubmission();const txt=subject+"\n\n"+body;
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(()=>toast("Submission copied — paste it into any email.")).catch(()=>fallbackCopy(txt))}else fallbackCopy(txt)}
+function fallbackCopy(t){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Submission copied — paste it into any email.")}catch(e){toast("Copy failed — nothing lost, your project is saved.",true)}ta.remove()}
 /* boot */
 P=load(LS_C,null)||blankProject();if(!P.timeline) P.timeline=[];render();markSaved();
 </script>

@@ -90,11 +90,11 @@ select `AI-Automation-Builder` → publish directory `/`, no build command.
 
 ## Connect email (one-click submit)
 
-1. Create a Google Apps Script web app that accepts `POST {subject, body, project}`
-   and calls `GmailApp.sendEmail("prime.kreatives@gmail.com", subject, body)`.
-2. Deploy → copy the `/exec` URL.
+1. Open <https://script.google.com> → New project → paste in `apps-script/Code.gs`
+   (ready-made: emails the full submission + attaches the project JSON).
+2. Deploy → New deployment → Web app → Execute as **Me**, access **Anyone**,
+   then copy the `/exec` URL.
 3. In the app: Projects → Connection settings → paste → Save connection.
-4. Status flips from `DEMO` to `CONNECTED`.
 
 Without it, Submit opens the visitor's email app with everything pre-filled.
 Failed sends never destroy work — the project stays saved with a Retry button.
