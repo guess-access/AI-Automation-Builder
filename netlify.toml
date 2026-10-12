@@ -1,0 +1,3 @@
+# Netlify: static site, no build step. index.html is served from the repo root.
+[build]
+  publish = "."
