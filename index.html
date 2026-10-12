@@ -149,6 +149,7 @@ footer.pk-foot{background:var(--indigo);color:rgba(244,241,234,.62);border-top:1
 .foot-social a{width:40px;height:40px;border-radius:50%;border:1px solid rgba(221,181,104,.4);display:flex;align-items:center;justify-content:center;color:var(--sand);font-size:18px;text-decoration:none}
 .foot-social a:hover{background:rgba(221,181,104,.15)}
 .foot-social img{width:19px;height:19px;display:block}
+.foot-social svg{width:19px;height:19px;display:block}
 .foot-h{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);margin-bottom:16px}
 .foot-links{list-style:none;display:grid;gap:10px;font-size:14px;margin:0;padding:0}
 .foot-links a{color:rgba(244,241,234,.7);text-decoration:none}
@@ -158,6 +159,8 @@ footer.pk-foot{background:var(--indigo);color:rgba(244,241,234,.62);border-top:1
 .foot-contact a:hover{color:var(--sand)}
 .foot-base{border-top:1px solid rgba(244,241,234,.1);padding:20px 0;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.06em;text-align:center;color:rgba(244,241,234,.45)}
 .foot-base span{color:var(--sand)}
+.foot-base a{color:var(--sand);text-decoration:none}
+.foot-base a:hover{text-decoration:underline}
 @media(max-width:760px){.foot-grid{grid-template-columns:1fr;padding:40px 22px 28px}}
 @media print{
   .topbar,.steps,.no-print{display:none!important}
@@ -187,30 +190,31 @@ footer.pk-foot{background:var(--indigo);color:rgba(244,241,234,.62);border-top:1
       </div>
       <p class="foot-bio">Client success &amp; executive operations with a creative eye — reporting, SOPs and brand work that make your business look sharp.</p>
       <div class="foot-social">
-        <a href="https://prime-kreatives.netlify.app/" target="_blank" rel="noopener" aria-label="Website"><img src="https://cdn.simpleicons.org/internetexplorer/DDB568" alt="Website" onerror="this.outerHTML='🌐'"></a>
+        <a href="https://github.com/guess-access" target="_blank" rel="noopener" aria-label="GitHub"><img src="https://cdn.simpleicons.org/github/DDB568" alt="GitHub" data-dead="'🌐'"></a>
         <a href="https://www.facebook.com/prime.kreatives17" target="_blank" rel="noopener" aria-label="Facebook"><img src="https://cdn.simpleicons.org/facebook/DDB568" alt="Facebook"></a>
         <a href="https://www.instagram.com/prime.kreatives" target="_blank" rel="noopener" aria-label="Instagram"><img src="https://cdn.simpleicons.org/instagram/DDB568" alt="Instagram"></a>
+        <a href="https://prime-kreatives.netlify.app/" target="_blank" rel="noopener" aria-label="Website"><svg viewBox="0 0 24 24" fill="none" stroke="#DDB568" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg></a>
       </div>
     </div>
     <div>
       <div class="foot-h">Explore</div>
-      <div class="foot-links">
-        <a href="https://prime-kreatives.netlify.app/">Home</a>
-        <a href="privacy-policy.html">Privacy Policy</a>
-        <a href="terms-legal-policy.html">Terms &amp; Legal</a>
-        <a href="https://prime-kreatives.netlify.app/discovery-call.html">Discovery call</a>
-      </div>
+      <ul class="foot-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="privacy-policy.html">Privacy Policy</a></li>
+        <li><a href="terms-legal-policy.html">Terms &amp; Legal</a></li>
+        <li><a href="https://prime-kreatives.netlify.app/discovery-call.html">Discovery call</a></li>
+      </ul>
     </div>
     <div>
       <div class="foot-h">Get in touch</div>
       <div class="foot-contact">
-        <a href="https://prime-kreatives.netlify.app/" target="_blank" rel="noopener">prime-kreatives.netlify.app</a>
         <a href="mailto:prime.kreatives@gmail.com">prime.kreatives@gmail.com</a>
+        <a href="tel:+639691556228">+63 969 155 6228</a>
         <span>Cebu City, Philippines</span>
       </div>
     </div>
   </div>
-  <div class="foot-base">&copy; <span>2026</span> Prime Kreatives. All rights reserved.</div>
+  <div class="foot-base">&copy; <span>2024</span> Prime Kreatives. All rights reserved. <span class="foot-sep">·</span> <a href="../privacy-policy.html">Privacy</a> <span class="foot-sep">·</span> <a href="../terms-legal-policy.html">Terms</a></div>
 </footer>
 <script>
 "use strict";
